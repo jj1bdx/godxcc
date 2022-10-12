@@ -8,9 +8,12 @@ import (
 )
 
 func DXCCGetRecord(callsign string) DXCCData {
-	call := strings.ToUpper(callsign)
-	dxccdata, matched := DXCCFullcalls[call]
 	record := DXCCData{}
+	call := strings.ToUpper(callsign)
+	if len(call) == 0 {
+		return record
+	}
+	dxccdata, matched := DXCCFullcalls[call]
 	if matched {
 		return dxccdata
 	}
@@ -130,14 +133,16 @@ func getWpxPrefix(call string) string {
 	// Case 2
 	// A is empty and C is not empty from here
 	if parta == "" && partc != "" {
-		_, err := strconv.Atoi(partc)
+		num, err := strconv.Atoi(partc)
 		if err == nil {
+			fmt.Printf("num: %d\n", num)
 			// Case 2.1
 			// C is only a number
 			// Regular prefix of B is in prefix1
 			regprefix1 := regexp.MustCompile(`(.+\d)[A-Z]*`)
 			prefixmap1 := regprefix1.FindStringSubmatch(partb)
 			prefix1 := prefixmap1[1]
+			fmt.Printf("prefix1: %s\n", prefix1)
 			// Here we need to find out how many digits there are in the
 			// prefix, because for example A45XR/0 is A40. If there are 2
 			// numbers, the first is not deleted. If course in exotic cases
@@ -147,7 +152,13 @@ func getWpxPrefix(call string) string {
 			// attached.   You can still edit it by hand anyway..
 			regprefix2 := regexp.MustCompile(`^([A-Z]\d)\d$`)
 			prefixmap2 := regprefix2.FindStringSubmatch(prefix1)
-			prefix2 := prefixmap2[1]
+			var prefix2 string
+			if len(prefixmap2) == 2 {
+				prefix2 = prefixmap2[1]
+			} else {
+				prefix2 = prefix1
+			}
+			fmt.Printf("prefix2: %s\n", prefix2)
 			if prefix2 != "" {
 				// For example:
 				// prefix1 = "A45", partc = "0"	-> prefix = "A40"

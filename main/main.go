@@ -1,8 +1,12 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"io"
+	"os"
 	"github.com/jj1bdx/godxcc"
+	"strings"
 )
 
 func printinfo(call string) {
@@ -11,9 +15,22 @@ func printinfo(call string) {
 
 func main() {
 	godxcc.LoadCty()
-	printinfo("jj1bdx")
-	printinfo("8J1RL")
-	printinfo("KL7/JJ1BDX")
-	printinfo("W1AW/KH0")
-	printinfo("3D2AG")
+
+	fp, _ := os.Open("callsigns.txt")	
+	reader := bufio.NewReader(fp)
+
+	end := false
+	for !end {
+		call, err := reader.ReadString('\n')
+		if err != nil {
+			if err == io.EOF {
+				end = true
+				break
+			} else {
+				fmt.Printf("err: %v\n", err)
+				return
+			}
+		}
+		printinfo(strings.TrimSpace(call))
+	}
 }
