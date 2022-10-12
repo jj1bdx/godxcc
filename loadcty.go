@@ -130,11 +130,10 @@ func LoadCty() {
 				dxccdata := lastdxccdata
 				// CQ Zone in ()
 				regwaz := regexp.MustCompile(`\((\d+)\)`)
-				wazstr := regwaz.FindString(word)
-				if wazstr != "" {
+				wazstr := regwaz.FindStringSubmatch(word)
+				if len(wazstr) == 2 && wazstr[1] != "" {
 					// Trim parentheses
-					l := len(wazstr)
-					wazval, err := strconv.Atoi(wazstr[1 : l-1])
+					wazval, err := strconv.Atoi(wazstr[1])
 					if err != nil {
 						log.Fatalf("LoadCty() wazval: %v", err)
 					}
@@ -142,11 +141,10 @@ func LoadCty() {
 				}
 				// ITU Zone in ()
 				regituz := regexp.MustCompile(`\[(\d+)\]`)
-				ituzstr := regituz.FindString(word)
-				if ituzstr != "" {
+				ituzstr := regituz.FindStringSubmatch(word)
+				if len(ituzstr) == 2 && ituzstr[1] != "" {
 					// Trim square brackets
-					l := len(ituzstr)
-					ituzval, err := strconv.Atoi(ituzstr[1 : l-1])
+					ituzval, err := strconv.Atoi(ituzstr[1])
 					if err != nil {
 						log.Fatalf("LoadCty() ituzval: %v", err)
 					}
@@ -173,7 +171,5 @@ func LoadCty() {
 			}
 			// fmt.Printf("\n")
 		}
-
 	}
-
 }
