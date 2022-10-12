@@ -1,5 +1,24 @@
 package godxcc
 
+// WAE prefix to DXCC prefix
+
+var WAEToDXCC = map[string]string{
+        // European Turkey = Turkey
+        "*TA1": "TA",
+        // Vienna Intl Ctr = Austria
+        "*4U1V": "OE",
+        // Shetland Islands = Scotland
+        "*GM/s": "GM",
+        // African Italy = Italy
+        "*IG9": "I",
+        // Sicily = Italy
+        "*IT9": "I",
+        // Bear Island = Svalbard
+        "*JW/b": "JW"
+}
+
+// DXCC prefix to DXCC entity code
+
 var ctyToEntitycode = map[string]int{
 	"1A":    246,
 	"1S":    247,
@@ -342,6 +361,8 @@ var ctyToEntitycode = map[string]int{
 	"ZS":    462,
 	"ZS8":   201,
 }
+
+// DXCC entity code to DXCC prefix
 
 var entitycodeToCty = map[int]string{
 	246: "1A",
