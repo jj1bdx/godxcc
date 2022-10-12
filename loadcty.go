@@ -1,7 +1,9 @@
 package godxcc
 
 import (
+	_ "embed"
 	"bufio"
+	"bytes"
 	// "fmt" // for debug only
 	"io"
 	"log"
@@ -11,6 +13,9 @@ import (
 	"strconv"
 	"strings"
 )
+
+//go:embed cty.dat
+var ctyFile []byte
 
 type DXCCData struct {
 	waecountry string
@@ -70,7 +75,9 @@ func LoadCty() {
 
 	var lastdxccdata DXCCData
 
-	reader := locateCty()
+	// reader := locateCty()
+	reader := bufio.NewReader(bytes.NewReader(ctyFile))
+
 	for line, err := reader.ReadBytes('\n'); line != nil || err != nil; line, err = reader.ReadBytes('\n') {
 		if err != nil {
 			if err != io.EOF {
