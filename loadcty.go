@@ -2,7 +2,7 @@ package godxcc
 
 import (
 	"bufio"
-	"fmt"
+	// "fmt" // for debug only
 	"io"
 	"log"
 	"os"
@@ -118,7 +118,6 @@ func LoadCty() {
 			} else {
 				dxccdata.entitycode = entitycode
 			}
-			fmt.Printf("DXCC line: %v\n", dxccdata)
 			lastdxccdata = dxccdata
 		} else {
 			// prefix line for the previous DXCC
@@ -127,10 +126,8 @@ func LoadCty() {
 			words := strings.Split(linetrimmed, ",")
 			for i := range words {
 				word := words[i]
-				fmt.Printf("Word: %s\n", word)
-				// dxccdata may be modified
+				// Use saved data, dxccdata may be modified
 				dxccdata := lastdxccdata
-				fmt.Printf("dxccdata: %v\n", dxccdata)
 				// CQ Zone in ()
 				regwaz := regexp.MustCompile(`\((\d+)\)`)
 				wazstr := regwaz.FindString(word)
@@ -161,14 +158,14 @@ func LoadCty() {
 					// Fullcall
 					fullcall := callstr[1:]
 					DXCCFullcalls[fullcall] = dxccdata
-					fmt.Printf("DXCCFullcalls[%s] = %v\n", fullcall, dxccdata)
+					// fmt.Printf("DXCCFullcalls[%s] = %v\n", fullcall, dxccdata)
 				} else {
 					// Normal prefix
 					DXCCPrefixes[callstr] = dxccdata
-					fmt.Printf("DXCCPrefixes[%s] = %v\n", callstr, dxccdata)
+					// fmt.Printf("DXCCPrefixes[%s] = %v\n", callstr, dxccdata)
 				}
 			}
-			fmt.Printf("\n")
+			// fmt.Printf("\n")
 		}
 
 	}
