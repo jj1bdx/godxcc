@@ -1,9 +1,9 @@
 package godxcc
 
 import (
-	_ "embed"
 	"bufio"
 	"bytes"
+	_ "embed"
 	// "fmt" // for debug only
 	"io"
 	"log"
