@@ -153,10 +153,11 @@ func getWpxPrefix(call string) string {
 			regprefix2 := regexp.MustCompile(`^([A-Z]\d)\d$`)
 			prefixmap2 := regprefix2.FindStringSubmatch(prefix1)
 			var prefix2 string
+			fmt.Printf("prefixmap2: %v\n", prefixmap2)
 			if len(prefixmap2) == 2 {
 				prefix2 = prefixmap2[1]
 			} else {
-				prefix2 = prefix1
+				prefix2 = ""
 			}
 			fmt.Printf("prefix2: %s\n", prefix2)
 			if prefix2 != "" {
@@ -168,9 +169,9 @@ func getWpxPrefix(call string) string {
 				// Otherwise cut all numbers
 				// Prefix without number in prefix3
 				// and add attached number
-				i := strings.IndexAny(prefix2, "0123456789")
+				i := strings.IndexAny(prefix1, "0123456789")
 				fmt.Println("Case 2.1 b")
-				return prefix2[:i] + partc
+				return prefix1[:i] + partc
 			}
 		} else {
 			// Case 2.2
