@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"path"
+	"regexp"
 	"strconv"
 	"strings"
 )
@@ -14,7 +15,7 @@ import (
 type DXCCData struct {
 	waecountry string
 	waz        int
-	itu        int
+	ituz       int
 	cont       string
 	lat        float64
 	lon        float64
@@ -23,6 +24,9 @@ type DXCCData struct {
 	dxccprefix string
 	entitycode int
 }
+
+var DXCCPrefixes = map[string]DXCCData{}
+var DXCCFullcalls = map[string]DXCCData{}
 
 // Locate cty.dat and open the file.
 // Returns the *bufio.Reader for the file.
@@ -64,6 +68,8 @@ func locateCty() *bufio.Reader {
 
 func LoadCty() {
 
+	var lastdxccdata DXCCData
+
 	reader := locateCty()
 	for line, err := reader.ReadBytes('\n'); line != nil || err != nil; line, err = reader.ReadBytes('\n') {
 		if err != nil {
@@ -82,9 +88,9 @@ func LoadCty() {
 			if err != nil {
 				log.Fatalf("LoadCty() dxccdata.waz: %v", err)
 			}
-			dxccdata.itu, err = strconv.Atoi(strings.TrimSpace(linemap[2]))
+			dxccdata.ituz, err = strconv.Atoi(strings.TrimSpace(linemap[2]))
 			if err != nil {
-				log.Fatalf("LoadCty() dxccdata.itu: %v", err)
+				log.Fatalf("LoadCty() dxccdata.ituz: %v", err)
 			}
 			dxccdata.cont = strings.TrimSpace(linemap[3])
 			dxccdata.lat, err = strconv.ParseFloat(strings.TrimSpace(linemap[4]), 64)
@@ -97,7 +103,7 @@ func LoadCty() {
 			}
 			dxccdata.utc, err = strconv.ParseFloat(strings.TrimSpace(linemap[6]), 64)
 			if err != nil {
-				log.Fatalf("LoadCty() dxccdata.lon: %v", err)
+				log.Fatalf("LoadCty() dxccdata.utc: %v", err)
 			}
 			dxccdata.waeprefix = strings.TrimSpace(linemap[7])
 			dxccprefix, exists := WAEToDXCC[dxccdata.waeprefix]
@@ -113,6 +119,7 @@ func LoadCty() {
 				dxccdata.entitycode = entitycode
 			}
 			fmt.Printf("DXCC line: %v\n", dxccdata)
+			lastdxccdata = dxccdata
 		} else {
 			// prefix line for the previous DXCC
 			// Remove ending semicolon
@@ -120,7 +127,46 @@ func LoadCty() {
 			words := strings.Split(linetrimmed, ",")
 			for i := range words {
 				word := words[i]
-				fmt.Printf("Word: %s ", word)
+				fmt.Printf("Word: %s\n", word)
+				// dxccdata may be modified
+				dxccdata := lastdxccdata
+				fmt.Printf("dxccdata: %v\n", dxccdata)
+				// CQ Zone in ()
+				regwaz := regexp.MustCompile(`\((\d+)\)`)
+				wazstr := regwaz.FindString(word)
+				if wazstr != "" {
+					wazval, err := strconv.Atoi(strings.Trim(wazstr, "()"))
+					if err != nil {
+						log.Fatalf("LoadCty() wazval: %v", err)
+					}
+					dxccdata.waz = wazval
+				}
+				// ITU Zone in ()
+				regituz := regexp.MustCompile(`\[(\d+)\]`)
+				ituzstr := regituz.FindString(word)
+				if ituzstr != "" {
+					ituzval, err := strconv.Atoi(strings.Trim(ituzstr, "[]"))
+					if err != nil {
+						log.Fatalf("LoadCty() ituzval: %v", err)
+					}
+					dxccdata.ituz = ituzval
+				}
+				// Check fullcall (begins with "=") or not
+				regcall := regexp.MustCompile(`=?([A-Z0-9\/]+)`)
+				callstr := regcall.FindString(word)
+				if callstr == "" {
+					log.Fatalf("LoadCty() callstr invalid call: %s", callstr)
+				}
+				if callstr[0:1] == "=" {
+					// Fullcall
+					fullcall := callstr[1:]
+					DXCCFullcalls[fullcall] = dxccdata
+					fmt.Printf("DXCCFullcalls[%s] = %v\n", fullcall, dxccdata)
+				} else {
+					// Normal prefix
+					DXCCPrefixes[callstr] = dxccdata
+					fmt.Printf("DXCCPrefixes[%s] = %v\n", callstr, dxccdata)
+				}
 			}
 			fmt.Printf("\n")
 		}
