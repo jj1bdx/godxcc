@@ -132,7 +132,9 @@ func LoadCty() {
 				regwaz := regexp.MustCompile(`\((\d+)\)`)
 				wazstr := regwaz.FindString(word)
 				if wazstr != "" {
-					wazval, err := strconv.Atoi(strings.Trim(wazstr, "()"))
+					// Trim parentheses
+					l := len(wazstr)
+					wazval, err := strconv.Atoi(wazstr[1 : l-1])
 					if err != nil {
 						log.Fatalf("LoadCty() wazval: %v", err)
 					}
@@ -142,17 +144,21 @@ func LoadCty() {
 				regituz := regexp.MustCompile(`\[(\d+)\]`)
 				ituzstr := regituz.FindString(word)
 				if ituzstr != "" {
-					ituzval, err := strconv.Atoi(strings.Trim(ituzstr, "[]"))
+					// Trim square brackets
+					l := len(ituzstr)
+					ituzval, err := strconv.Atoi(ituzstr[1 : l-1])
 					if err != nil {
 						log.Fatalf("LoadCty() ituzval: %v", err)
 					}
 					dxccdata.ituz = ituzval
 				}
 				// Check fullcall (begins with "=") or not
-				regcall := regexp.MustCompile(`=?([A-Z0-9\/]+)`)
-				callstr := regcall.FindString(word)
-				if callstr == "" {
-					log.Fatalf("LoadCty() callstr invalid call: %s", callstr)
+				pos := strings.IndexAny(word, "([<{~")
+				var callstr string
+				if pos >= 0 {
+					callstr = word[:pos]
+				} else {
+					callstr = word
 				}
 				if callstr[0:1] == "=" {
 					// Fullcall
