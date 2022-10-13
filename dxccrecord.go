@@ -13,18 +13,20 @@ func DXCCGetRecord(callsign string) DXCCData {
 	if len(call) == 0 {
 		return record
 	}
+	wpxprefix := getWpxPrefix(call)
 	dxccdata, matched := DXCCFullcalls[call]
 	if matched {
+		fmt.Printf("call: %s, wpxprefix: %s, testcall: %s\n", call, wpxprefix, call)
 		return dxccdata
 	}
 	var testcall string
 	stroke := strings.IndexAny(call, "/")
 	if stroke >= 0 {
-		testcall = getWpxPrefix(call) + "AA"
+		testcall = wpxprefix + "AA"
 	} else {
 		testcall = call
 	}
-	fmt.Printf("call: %s, testcall: %s\n", call, testcall)
+	fmt.Printf("call: %s, wpxprefix: %s, testcall: %s\n", call, wpxprefix, testcall)
 	for s := range DXCCPrefixes {
 		if s[0:1] == testcall[0:1] {
 			if strings.HasPrefix(testcall, s) {
@@ -42,8 +44,7 @@ func getWpxPrefix(call string) string {
 	var partb string
 	var partc string
 
-	lidadditions := []string{"QRP", "QRPP", "LGT"}
-	csadditions := []string{"P", "M", "MM", "AM", "A"}
+	csadditions := []string{"P", "M", "MM", "AM", "A", "QRP", "QRPP", "LGT"}
 
 	// First check if the call is in the proper format, A/B/C where A and C
 	// are optional (prefix of guest country and P, MM, AM etc) and B is the
@@ -73,30 +74,29 @@ func getWpxPrefix(call string) string {
 		partc = callparts[2]
 	}
 
-	fmt.Printf("parta: %s, partb: %s, partc: %s\n", parta, partb, partc)
-
 	// Then how to distinguish KL7/JJ1BDX correctly?
-	// If the first part is a known prefix, then let the part (in B) be A
-	// and let the main callsign (in C) part be B
-	// if not: HEURISTIC: if the first part length is smaller than second part,
-	// the first part is highly likely to be a prefix
-
-	_, exists := DXCCPrefixes[partb]
-	if exists || (len(partb) < len(partc)) {
+	// Heuristics:
+	// If the first part B is a known prefix or
+	// if the first part B is not a known prefix
+	//    and the second part A has a known prefix
+	// then let the main callsign in C be new B
+	//    and the prefix in B be new A
+	// If new A is longer than new B,
+	//    swap A and B
+	_, existsb := DXCCPrefixes[partb]
+	_, existsc := DXCCPrefixes[partc]
+	if existsb || (!existsb && existsc) {
 		parta = partb
 		partb = partc
 		partc = ""
 	}
-
-	// Remove liddish callsign additions like /QRP and /LGT.
-	if partc != "" {
-		for i := range lidadditions {
-			if partc == lidadditions[i] {
-				partc = ""
-				break
-			}
-		}
+	if len(parta) > len(partb) {
+		tmp := partb
+		partb = parta
+		parta = tmp
 	}
+
+	fmt.Printf("parta: %s, partb: %s, partc: %s\n", parta, partb, partc)
 
 	// Depending on these values we have to determine the prefix.
 	// Following cases are possible:
@@ -109,6 +109,7 @@ func getWpxPrefix(call string) string {
 	// 2.2    C is /P,/M,/MM,/AM -> 1.
 	// 2.3    C is something else and will be interpreted as a Prefix
 	// 3.    A is not empty, will be taken as prefix, regardless of C
+	// 4.    A is not empty, will be taken as prefix, regardless of C
 
 	// A and C are empty from here
 	if parta == "" && partc == "" {
@@ -152,26 +153,19 @@ func getWpxPrefix(call string) string {
 			// attached.   You can still edit it by hand anyway..
 			regprefix2 := regexp.MustCompile(`^([A-Z]\d)\d$`)
 			prefixmap2 := regprefix2.FindStringSubmatch(prefix1)
-			var prefix2 string
 			fmt.Printf("prefixmap2: %v\n", prefixmap2)
 			if len(prefixmap2) == 2 {
-				prefix2 = prefixmap2[1]
-			} else {
-				prefix2 = ""
-			}
-			fmt.Printf("prefix2: %s\n", prefix2)
-			if prefix2 != "" {
 				// For example:
 				// prefix1 = "A45", partc = "0"	-> prefix = "A40"
 				fmt.Println("Case 2.1 a")
-				return prefix2 + partc
+				return prefixmap2[1] + partc
 			} else {
 				// Otherwise cut all numbers
 				// Prefix without number in prefix3
 				// and add attached number
-				i := strings.IndexAny(prefix1, "0123456789")
+				prefix2 := strings.TrimRight(prefix1, "0123456789")
 				fmt.Println("Case 2.1 b")
-				return prefix1[:i] + partc
+				return prefix2 + partc
 			}
 		} else {
 			// Case 2.2
@@ -215,6 +209,13 @@ func getWpxPrefix(call string) string {
 							return partc[:l] + "0"
 						}
 					}
+				} else {
+					// Same as Case 1.1
+					regprefix6 := regexp.MustCompile(`(.+\d)[A-Z]*`)
+					prefixmap6 := regprefix6.FindStringSubmatch(partb)
+					fmt.Println("Case 2.3 c")
+					return prefixmap6[1]
+
 				}
 			}
 
@@ -235,6 +236,7 @@ func getWpxPrefix(call string) string {
 		}
 	}
 
+	// Return empty string for unparsable prefix
 	return ""
 }
 
