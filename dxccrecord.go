@@ -10,10 +10,13 @@ import (
 // Get the DXCCData record for a callsign (must be uppercase)
 func DXCCGetRecord(call string) DXCCData {
 	record := DXCCData{}
+	// if the callsign is matched in the fullcall database,
+	// use it as is
 	dxccdata, matched := DXCCFullcalls[call]
 	if matched {
 		return dxccdata
 	}
+	// Check WPX prefix if callsign contains a stroke/slash
 	var testcall string
 	stroke := strings.IndexAny(call, "/")
 	if stroke >= 0 {
@@ -25,7 +28,7 @@ func DXCCGetRecord(call string) DXCCData {
 	regprefix := regexp.MustCompile(`^([A-Z0-9\/]+)`)
 	prefixmap := regprefix.FindStringSubmatch(testcall)
 	testprefix := prefixmap[1]
-	// Use the longest match result
+	// Use the longest match result for the prefix
 	matchlen := 0
 	for s := range DXCCPrefixes {
 		if strings.HasPrefix(testprefix, s) {
@@ -234,21 +237,3 @@ func getWpxPrefix(call string) string {
 	// Return empty string for unparsable prefix
 	return ""
 }
-
-/*
-type DXCCData struct {
-	waecountry string
-	waz        int
-	ituz       int
-	cont       string
-	lat        float64
-	lon        float64
-	utc        float64
-	waeprefix  string
-	dxccprefix string
-	entitycode int
-}
-
-var DXCCPrefixes = map[string]DXCCData{}
-var DXCCFullcalls = map[string]DXCCData{}
-*/
