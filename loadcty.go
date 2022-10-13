@@ -14,6 +14,9 @@ import (
 	"strings"
 )
 
+// Load ctyFile from the local file cty.dat
+// at the compile time using go:embed
+
 //go:embed cty.dat
 var ctyFile []byte
 
@@ -33,49 +36,11 @@ type DXCCData struct {
 var DXCCPrefixes = map[string]DXCCData{}
 var DXCCFullcalls = map[string]DXCCData{}
 
-// Locate cty.dat and open the file.
-// Returns the *bufio.Reader for the file.
-// Search path: /usr/share/dxcc, /usr/local/share/dxcc,
-//              and the path where the program resides.
-
-func locateCty() *bufio.Reader {
-	basename, err := os.Executable()
-	if err != nil {
-		log.Fatalf("locateCty() basename: %v", err)
-	}
-	basepath := path.Base(basename)
-
-	var filename string
-	filename = "/usr/share/dxcc/cty.dat"
-	_, err = os.Stat(filename)
-	if !os.IsNotExist(err) {
-	} else {
-		filename = "/usr/local/share/dxcc/cty.dat"
-		_, err = os.Stat(filename)
-		if !os.IsNotExist(err) {
-		} else {
-			filename = basepath + "/cty.dat"
-			_, err = os.Stat(filename)
-			if !os.IsNotExist(err) {
-			} else {
-				log.Fatalf("locateCty() unable to find cty.dat: %v", err)
-			}
-		}
-	}
-	fp, err := os.Open(filename)
-	if err != nil {
-		log.Fatalf("locateCty() unable to open %s: %v", filename, err)
-	}
-	return bufio.NewReader(fp)
-}
-
 // Read cty.dat and
 
 func LoadCty() {
 
 	var lastdxccdata DXCCData
-
-	// reader := locateCty()
 	reader := bufio.NewReader(bytes.NewReader(ctyFile))
 
 	for line, err := reader.ReadBytes('\n'); line != nil || err != nil; line, err = reader.ReadBytes('\n') {
