@@ -6001,7 +6001,7 @@ call: JI1NCZ, DXCCData: {Japan 25 45 AS 36.4 -138.38 -9 JA JA 339}
 call: JI1NIB, DXCCData: {Japan 25 45 AS 36.4 -138.38 -9 JA JA 339}
 call: JI1NIB/1, DXCCData: {Japan 25 45 AS 36.4 -138.38 -9 JA JA 339}
 call: JI1NIK, DXCCData: {Japan 25 45 AS 36.4 -138.38 -9 JA JA 339}
-call: JI1NJC/TF, DXCCData: {Japan 25 45 AS 36.4 -138.38 -9 JA JA 339}
+call: JI1NJC/TF, DXCCData: {Iceland 40 17 EU 64.8 18.73 0 TF TF 242}
 call: JI1NMM, DXCCData: {Japan 25 45 AS 36.4 -138.38 -9 JA JA 339}
 call: JI1OKP, DXCCData: {Japan 25 45 AS 36.4 -138.38 -9 JA JA 339}
 call: JI1PJA, DXCCData: {Japan 25 45 AS 36.4 -138.38 -9 JA JA 339}
@@ -12921,7 +12921,7 @@ call: WD5COV, DXCCData: {United States 4 7 NA 37.6 91.87 5 K K 291}
 call: WD5FBW, DXCCData: {United States 4 7 NA 37.6 91.87 5 K K 291}
 call: WD5K, DXCCData: {United States 4 7 NA 37.6 91.87 5 K K 291}
 call: WD6DBM, DXCCData: {United States 3 6 NA 37.6 91.87 5 K K 291}
-call: WD8CRT/V73, DXCCData: {United States 5 8 NA 37.6 91.87 5 K K 291}
+call: WD8CRT/V73, DXCCData: {Marshall Islands 31 65 OC 9.08 -167.33 -12 V7 V7 168}
 call: WD9IQN, DXCCData: {United States 4 8 NA 37.6 91.87 5 K K 291}
 call: WE2F, DXCCData: {United States 5 8 NA 37.6 91.87 5 K K 291}
 call: WE3C, DXCCData: {United States 5 8 NA 37.6 91.87 5 K K 291}
