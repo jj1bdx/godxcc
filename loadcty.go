@@ -30,16 +30,16 @@ var ctyFile []byte
 // DXCC record data for a given callsign
 
 type DXCCData struct {
-	waecountry string
-	waz        int
-	ituz       int
-	cont       string
-	lat        float64
-	lon        float64
-	utc        float64
-	waeprefix  string
-	dxccprefix string
-	entitycode int
+	Waecountry string
+	Waz        int
+	Ituz       int
+	Cont       string
+	Lat        float64
+	Lon        float64
+	Utc        float64
+	Waeprefix  string
+	Dxccprefix string
+	Entitycode int
 }
 
 // Tables/maps for DXCC prefixes and full callsigns
@@ -68,40 +68,40 @@ func LoadCty() {
 			var dxccdata DXCCData
 			var err error
 			linemap := strings.Split(string(line), ":")
-			dxccdata.waecountry = strings.TrimSpace(linemap[0])
-			dxccdata.waz, err = strconv.Atoi(strings.TrimSpace(linemap[1]))
+			dxccdata.Waecountry = strings.TrimSpace(linemap[0])
+			dxccdata.Waz, err = strconv.Atoi(strings.TrimSpace(linemap[1]))
 			if err != nil {
-				log.Fatalf("LoadCty() dxccdata.waz: %v", err)
+				log.Fatalf("LoadCty() dxccdata.Waz: %v", err)
 			}
-			dxccdata.ituz, err = strconv.Atoi(strings.TrimSpace(linemap[2]))
+			dxccdata.Ituz, err = strconv.Atoi(strings.TrimSpace(linemap[2]))
 			if err != nil {
-				log.Fatalf("LoadCty() dxccdata.ituz: %v", err)
+				log.Fatalf("LoadCty() dxccdata.Ituz: %v", err)
 			}
-			dxccdata.cont = strings.TrimSpace(linemap[3])
-			dxccdata.lat, err = strconv.ParseFloat(strings.TrimSpace(linemap[4]), 64)
+			dxccdata.Cont = strings.TrimSpace(linemap[3])
+			dxccdata.Lat, err = strconv.ParseFloat(strings.TrimSpace(linemap[4]), 64)
 			if err != nil {
-				log.Fatalf("LoadCty() dxccdata.lat: %v", err)
+				log.Fatalf("LoadCty() dxccdata.Lat: %v", err)
 			}
-			dxccdata.lon, err = strconv.ParseFloat(strings.TrimSpace(linemap[5]), 64)
+			dxccdata.Lon, err = strconv.ParseFloat(strings.TrimSpace(linemap[5]), 64)
 			if err != nil {
-				log.Fatalf("LoadCty() dxccdata.lon: %v", err)
+				log.Fatalf("LoadCty() dxccdata.Lon: %v", err)
 			}
-			dxccdata.utc, err = strconv.ParseFloat(strings.TrimSpace(linemap[6]), 64)
+			dxccdata.Utc, err = strconv.ParseFloat(strings.TrimSpace(linemap[6]), 64)
 			if err != nil {
-				log.Fatalf("LoadCty() dxccdata.utc: %v", err)
+				log.Fatalf("LoadCty() dxccdata.Utc: %v", err)
 			}
-			dxccdata.waeprefix = strings.TrimSpace(linemap[7])
-			dxccprefix, exists := WAEToDXCC[dxccdata.waeprefix]
+			dxccdata.Waeprefix = strings.TrimSpace(linemap[7])
+			dxccprefix, exists := WAEToDXCC[dxccdata.Waeprefix]
 			if !exists {
-				dxccdata.dxccprefix = dxccdata.waeprefix
+				dxccdata.Dxccprefix = dxccdata.Waeprefix
 			} else {
-				dxccdata.dxccprefix = dxccprefix
+				dxccdata.Dxccprefix = dxccprefix
 			}
-			entitycode, exists := ctyToEntitycode[dxccdata.dxccprefix]
+			entitycode, exists := ctyToEntitycode[dxccdata.Dxccprefix]
 			if !exists {
-				dxccdata.entitycode = 0
+				dxccdata.Entitycode = 0
 			} else {
-				dxccdata.entitycode = entitycode
+				dxccdata.Entitycode = entitycode
 			}
 			lastdxccdata = dxccdata
 		} else {
@@ -122,7 +122,7 @@ func LoadCty() {
 					if err != nil {
 						log.Fatalf("LoadCty() wazval: %v", err)
 					}
-					dxccdata.waz = wazval
+					dxccdata.Waz = wazval
 				}
 				// ITU Zone in ()
 				regituz := regexp.MustCompile(`\[(\d+)\]`)
@@ -133,7 +133,7 @@ func LoadCty() {
 					if err != nil {
 						log.Fatalf("LoadCty() ituzval: %v", err)
 					}
-					dxccdata.ituz = ituzval
+					dxccdata.Ituz = ituzval
 				}
 				// Check fullcall (begins with "=") or not
 				pos := strings.IndexAny(word, "([<{~")
