@@ -1,5 +1,11 @@
 # godxcc: DXCC CTY.DAT database for Go
 
+## NOTE WELL
+
+* Run `godxcc.LoadCty()` for initialization
+* `godxcc.DXCCGetRecord()` argument callsign must be fully capitalized and verified
+* `CTY.DAT` file is *embedded* by go:embed aka embed package. Update and rebuild the package for updating the database.
+
 ## usage
 
 ```go
