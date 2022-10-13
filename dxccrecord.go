@@ -1,3 +1,9 @@
+// godxcc functions for looking up the DXCC database
+// from the callsign.
+// Use DXCCGetRecord("CALLSIGN").
+// (Note well: the callsign MUST be in the uppercase)
+// See loadcty.go for DXCCData definition.
+
 package godxcc
 
 import (

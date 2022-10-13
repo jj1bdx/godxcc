@@ -1,3 +1,9 @@
+// Loader of BIG CTY file cty.dat for godxcc.
+// See <https://www.country-files.com/big-cty/>
+// for the details of cty.dat format and updates.
+// NOTE WELL: godxcc uses EMBEDDED cty.dat
+// in the source file at the time of the package building.
+
 package godxcc
 
 import (
@@ -15,8 +21,13 @@ import (
 // Load ctyFile from the local file cty.dat
 // at the compile time using go:embed
 
+// Do not remove the "//go:embed" line
+// just before ctyFile var statement!
+
 //go:embed cty.dat
 var ctyFile []byte
+
+// DXCC record data for a given callsign
 
 type DXCCData struct {
 	waecountry string
@@ -31,10 +42,14 @@ type DXCCData struct {
 	entitycode int
 }
 
+// Tables/maps for DXCC prefixes and full callsigns
+// parsed and loaded from cty.dat
+
 var DXCCPrefixes = map[string]DXCCData{}
 var DXCCFullcalls = map[string]DXCCData{}
 
-// Read cty.dat and
+// Read cty.dat and store parsed data
+// into DXCCPrefixes and DXCCFullcalls
 
 func LoadCty() {
 

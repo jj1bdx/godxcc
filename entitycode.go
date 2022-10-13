@@ -1,3 +1,6 @@
+// godxcc tables/maps of DXCC entity codes and DXCC prefixes
+// (including main prefixes representing the primary prefix for an entity)
+
 package godxcc
 
 // WAE prefix to DXCC prefix
