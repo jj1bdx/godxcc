@@ -6,7 +6,6 @@ package main
 import (
 	"fmt"
 	"github.com/jj1bdx/godxcc"
-	"log"
 	"os"
 	"regexp"
 	"strings"
@@ -45,10 +44,12 @@ func main() {
 		// Pick up the prefix part of the testcall
 		regcheck := regexp.MustCompile(`^([A-Z0-9\/]+)$`)
 		checkmap := regcheck.FindStringSubmatch(call)
-		callsign := checkmap[1]
-
-		if callsign == "" {
-			log.Fatalf("Invalid callsign: %s\n", callsign)
+		var callsign string
+		if len(checkmap) == 0 {
+			fmt.Printf("Invalid Call:   %s\n\n", call)
+			continue
+		} else {
+			callsign = checkmap[1]
 		}
 
 		dxccdata := godxcc.DXCCGetRecord(callsign)
