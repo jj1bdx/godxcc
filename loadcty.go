@@ -10,6 +10,7 @@ import (
 	"bufio"
 	"bytes"
 	_ "embed"
+
 	// "fmt" // for debug only
 	"io"
 	"log"
@@ -45,8 +46,8 @@ type DXCCData struct {
 // Tables/maps for DXCC prefixes and full callsigns
 // parsed and loaded from cty.dat
 
-var tDXCCPrefixes = map[string]DXCCData{}
-var tDXCCFullcalls = map[string]DXCCData{}
+var tDXCCPrefixes = make(map[string]DXCCData, 16384)
+var tDXCCFullcalls = make(map[string]DXCCData, 65536)
 
 // Read cty.dat and store parsed data
 // into tDXCCPrefixes and tDXCCFullcalls
@@ -91,7 +92,7 @@ func LoadCty() {
 				log.Fatalf("LoadCty() dxccdata.Utc: %v", err)
 			}
 			dxccdata.Waeprefix = strings.TrimSpace(linemap[7])
-			dxccprefix, exists := WAEToDXCC[dxccdata.Waeprefix]
+			dxccprefix, exists := tWAEToDXCC[dxccdata.Waeprefix]
 			if !exists {
 				dxccdata.Dxccprefix = dxccdata.Waeprefix
 			} else {

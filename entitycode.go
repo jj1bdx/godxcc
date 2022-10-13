@@ -5,7 +5,7 @@ package godxcc
 
 // WAE prefix to DXCC prefix
 
-var WAEToDXCC = map[string]string{
+var tWAEToDXCC = map[string]string{
 	// European Turkey = Turkey
 	"*TA1": "TA",
 	// Vienna Intl Ctr = Austria
