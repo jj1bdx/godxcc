@@ -18,7 +18,7 @@ func DXCCGetRecord(call string) DXCCData {
 	record := DXCCData{}
 	// if the callsign is matched in the fullcall database,
 	// use it as is
-	dxccdata, matched := tDXCCFullcalls[call]
+	dxccdata, matched := GetDXCCFullcalls(call)
 	if matched {
 		return dxccdata
 	}
@@ -41,7 +41,10 @@ func DXCCGetRecord(call string) DXCCData {
 			lens := len(s)
 			if matchlen <= lens {
 				matchlen = lens
-				record = tDXCCPrefixes[s]
+				newrecord, matched := GetDXCCPrefixes(s)
+				if matched {
+					record = newrecord
+				}
 			}
 		}
 	}

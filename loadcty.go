@@ -46,15 +46,53 @@ type DXCCData struct {
 // Tables/maps for DXCC prefixes and full callsigns
 // parsed and loaded from cty.dat
 
-var tDXCCPrefixes = make(map[string]DXCCData, 16384)
-var tDXCCFullcalls = make(map[string]DXCCData, 65536)
+type DXCCRef struct {
+	Waeprefix string
+	Waz       int
+	Ituz      int
+}
+
+var tDXCCBase = make(map[string]DXCCData, 512)
+var tDXCCPrefixes = make(map[string]DXCCRef, 16384)
+var tDXCCFullcalls = make(map[string]DXCCRef, 65536)
+
+// Get complete DXCCFullcalls for a callsign
+func GetDXCCFullcalls(callsign string) (DXCCData, bool) {
+	dxccref, refexists := tDXCCFullcalls[callsign]
+	if refexists {
+		dxccdata, dataexists := tDXCCBase[dxccref.Waeprefix]
+		if dataexists {
+			dxccdata.Waz = dxccref.Waz
+			dxccdata.Ituz = dxccref.Ituz
+			return dxccdata, true
+		}
+	}
+	return DXCCData{}, false
+}
+
+// Get complete DXCCPrefixes for a prefix
+func GetDXCCPrefixes(prefix string) (DXCCData, bool) {
+	dxccref, refexists := tDXCCPrefixes[prefix]
+	if refexists {
+		dxccdata, dataexists := tDXCCBase[dxccref.Waeprefix]
+		if dataexists {
+			dxccdata.Waz = dxccref.Waz
+			dxccdata.Ituz = dxccref.Ituz
+			return dxccdata, true
+		}
+	}
+	return DXCCData{}, false
+}
 
 // Read cty.dat and store parsed data
+// Read cty.dat and store parsed data
 // into tDXCCPrefixes and tDXCCFullcalls
-
 func LoadCty() {
 
-	var lastdxccdata DXCCData
+	var lastwaeprefix string
+	var lastwaz int
+	var lastituz int
+
 	reader := bufio.NewReader(bytes.NewReader(ctyFile))
 
 	for line, err := reader.ReadBytes('\n'); line != nil || err != nil; line, err = reader.ReadBytes('\n') {
@@ -104,16 +142,19 @@ func LoadCty() {
 			} else {
 				dxccdata.Entitycode = entitycode
 			}
-			lastdxccdata = dxccdata
+			tDXCCBase[dxccdata.Waeprefix] = dxccdata
+
+			lastwaeprefix = dxccdata.Waeprefix
+			lastwaz = dxccdata.Waz
+			lastituz = dxccdata.Ituz
 		} else {
 			// prefix line for the previous DXCC
 			// Remove ending semicolon
 			linetrimmed := strings.TrimRight(strings.TrimSpace(string(line)), ";,")
 			words := strings.Split(linetrimmed, ",")
+			dxccref := DXCCRef{lastwaeprefix, lastwaz, lastituz}
 			for i := range words {
 				word := words[i]
-				// Use saved data, dxccdata may be modified
-				dxccdata := lastdxccdata
 				// CQ Zone in ()
 				regwaz := regexp.MustCompile(`\((\d+)\)`)
 				wazstr := regwaz.FindStringSubmatch(word)
@@ -123,7 +164,7 @@ func LoadCty() {
 					if err != nil {
 						log.Fatalf("LoadCty() wazval: %v", err)
 					}
-					dxccdata.Waz = wazval
+					dxccref.Waz = wazval
 				}
 				// ITU Zone in ()
 				regituz := regexp.MustCompile(`\[(\d+)\]`)
@@ -134,7 +175,7 @@ func LoadCty() {
 					if err != nil {
 						log.Fatalf("LoadCty() ituzval: %v", err)
 					}
-					dxccdata.Ituz = ituzval
+					dxccref.Ituz = ituzval
 				}
 				// Check fullcall (begins with "=") or not
 				pos := strings.IndexAny(word, "([<{~")
@@ -147,12 +188,12 @@ func LoadCty() {
 				if callstr[0:1] == "=" {
 					// Fullcall
 					fullcall := callstr[1:]
-					tDXCCFullcalls[fullcall] = dxccdata
-					// fmt.Printf("tDXCCFullcalls[%s] = %v\n", fullcall, dxccdata)
+					tDXCCFullcalls[fullcall] = dxccref
+					// fmt.Printf("tDXCCFullcalls[%s] = %v\n", fullcall, dxccref)
 				} else {
 					// Normal prefix
-					tDXCCPrefixes[callstr] = dxccdata
-					// fmt.Printf("tDXCCPrefixes[%s] = %v\n", callstr, dxccdata)
+					tDXCCPrefixes[callstr] = dxccref
+					// fmt.Printf("tDXCCPrefixes[%s] = %v\n", callstr, dxccref)
 				}
 			}
 			// fmt.Printf("\n")
