@@ -83,6 +83,18 @@ func getWpxPrefix(call string) string {
 		parta = callparts[0]
 		partb = callparts[1]
 		partc = callparts[2]
+
+		// If C is in csaddition, remove it
+		for i := range csadditions {
+			// For known modifiers, see Case 1.1
+			if partc == csadditions[i] {
+				partc = partb
+				partb = parta
+				parta = ""
+				break
+			}
+		}
+
 	}
 
 	// Then how to distinguish KL7/JJ1BDX correctly?
