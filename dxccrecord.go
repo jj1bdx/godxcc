@@ -7,29 +7,31 @@ import (
 	"strings"
 )
 
-func DXCCGetRecord(callsign string) DXCCData {
+// Get the DXCCData record for a callsign (must be uppercase)
+func DXCCGetRecord(call string) DXCCData {
 	record := DXCCData{}
-	call := strings.ToUpper(callsign)
-	if len(call) == 0 {
-		return record
-	}
-	wpxprefix := getWpxPrefix(call)
 	dxccdata, matched := DXCCFullcalls[call]
 	if matched {
-		// fmt.Printf("call: %s, wpxprefix: %s, testcall: %s\n", call, wpxprefix, call)
 		return dxccdata
 	}
 	var testcall string
 	stroke := strings.IndexAny(call, "/")
 	if stroke >= 0 {
-		testcall = wpxprefix + "AA"
+		testcall = getWpxPrefix(call) + "AA"
 	} else {
 		testcall = call
 	}
-	// fmt.Printf("call: %s, wpxprefix: %s, testcall: %s\n", call, wpxprefix, testcall)
+	// Pick up the prefix part of the testcall
+	regprefix := regexp.MustCompile(`^([A-Z0-9\/]+)`)
+	prefixmap := regprefix.FindStringSubmatch(testcall)
+	testprefix := prefixmap[1]
+	// Use the longest match result
+	matchlen := 0
 	for s := range DXCCPrefixes {
-		if s[0:1] == testcall[0:1] {
-			if strings.HasPrefix(testcall, s) {
+		if strings.HasPrefix(testprefix, s) {
+			lens := len(s)
+			if matchlen <= lens {
+				matchlen = lens
 				record = DXCCPrefixes[s]
 			}
 		}
@@ -76,24 +78,17 @@ func getWpxPrefix(call string) string {
 
 	// Then how to distinguish KL7/JJ1BDX correctly?
 	// Heuristics:
-	// If the first part B is a known prefix or
-	// if the first part B is not a known prefix
-	//    and the second part A has a known prefix
-	// then let the main callsign in C be new B
-	//    and the prefix in B be new A
-	// If new A is longer than new B,
-	//    swap A and B
+	// If the first part B is a known prefix
+	//   then let the main callsign in C be new B
+	//     and let prefix B be new A
+	// If not:
+	// If B is shorter than C,
+	//   then let C be new B and let B be new A
 	_, existsb := DXCCPrefixes[partb]
-	_, existsc := DXCCPrefixes[partc]
-	if existsb || (!existsb && existsc) {
+	if existsb || (len(partb) < len(partc)) {
 		parta = partb
 		partb = partc
 		partc = ""
-	}
-	if len(parta) > len(partb) {
-		tmp := partb
-		partb = parta
-		parta = tmp
 	}
 
 	// fmt.Printf("parta: %s, partb: %s, partc: %s\n", parta, partb, partc)
