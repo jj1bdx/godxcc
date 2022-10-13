@@ -55,7 +55,27 @@ func getWpxPrefix(call string) string {
 	var partb string
 	var partc string
 
-	csadditions := []string{"P", "M", "MM", "AM", "A", "QRP", "QRPP", "LGT"}
+	csadditions := map[string]bool{
+		"P":     true, // portable
+		"M":     true, // mobile
+		"MM":    true, // marine mobile
+		"AM":    true, // aeronautical mobile
+		"A":     true, // ?
+		"KT":    true, // FCC Rules Part 97.119(f)(1)
+		"AG":    true, // FCC Rules Part 97.119(f)(2)
+		"AE":    true, // FCC Rules Part 97.119(f)(3)
+		"QRP":   true, // Don't add this, please
+		"QRPP":  true, // Don't add this, please
+		"LGT":   true, // Lighthouse? Don't add this
+		"L":     true, // ?
+		"90KK":  true, // ?
+		"SO200": true, // JAs, please don't add this
+		"REN":   true, // Regional identifier?
+		"B":     true, // ?
+		"IEJ50": true, // JAs, please don't add this
+		"OKA50": true, // JAs, please don't add this
+		"OKA60": true, // JAs, please don't add this
+	}
 
 	// First check if the call is in the proper format, A/B/C where A and C
 	// are optional (prefix of guest country and P, MM, AM etc) and B is the
@@ -88,14 +108,11 @@ func getWpxPrefix(call string) string {
 	// If C is in csaddition, remove it
 	// Example: KL7/JJ1BDX/M -> KL7/JJ1BDX
 	// Example: JJ1BDX/AM -> JJ1BDX
-	for i := range csadditions {
-		// For known modifiers, see Case 1.1
-		if partc == csadditions[i] {
-			partc = partb
-			partb = parta
-			parta = ""
-			break
-		}
+	_, existscs := csadditions[partc]
+	if existscs {
+		partc = partb
+		partb = parta
+		parta = ""
 	}
 
 	// Then how to distinguish KL7/JJ1BDX correctly?
