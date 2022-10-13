@@ -1,3 +1,5 @@
+// callsign parsing test program
+
 package main
 
 import (
