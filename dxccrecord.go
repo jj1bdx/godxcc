@@ -110,10 +110,9 @@ func getWpxPrefix(call string) string {
 	// 1.2    B contains no number -> first two letters of B plus 0
 	// 2.    A empty and C is not empty, subcases:
 	// 2.1    C is only a number -> A with changed number
-	// 2.2    C is /P, /M, /MM, /AM, /QRP, etc. -> 1.
+	// 2.2    C is /P, /M, /MM, /AM, /QRP, etc. -> 1.1
 	// 2.3    C is something else and will be interpreted as a Prefix
-	// 3.    A is not empty, will be taken as prefix, regardless of C
-	// 4.    A is not empty, will be taken as prefix, regardless of C
+	// 3.     A is not empty, will be taken as prefix, regardless of C
 
 	// A and C are empty from here
 	if parta == "" && partc == "" {
@@ -229,9 +228,11 @@ func getWpxPrefix(call string) string {
 	// Case 3
 	if parta != "" {
 		// Case 3: A is not empty
-		i := strings.IndexAny(parta, "0123456789")
-		if i >= 0 {
-			// if ends in number: good prefix
+		i := strings.LastIndexAny(parta, "0123456789")
+		if i >= 1 {
+			// if the string length is 2 or more and
+			// the string ends in number: good prefix
+			// No prefix will be shorter than length 2
 			// fmt.Println("Case 3 a")
 			return parta
 		} else {
