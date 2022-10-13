@@ -1,7 +1,7 @@
 package godxcc
 
 import (
-	"fmt" // for debug only
+	// "/fmt" // for debug only
 	"regexp"
 	"strconv"
 	"strings"
@@ -16,7 +16,7 @@ func DXCCGetRecord(callsign string) DXCCData {
 	wpxprefix := getWpxPrefix(call)
 	dxccdata, matched := DXCCFullcalls[call]
 	if matched {
-		fmt.Printf("call: %s, wpxprefix: %s, testcall: %s\n", call, wpxprefix, call)
+		// fmt.Printf("call: %s, wpxprefix: %s, testcall: %s\n", call, wpxprefix, call)
 		return dxccdata
 	}
 	var testcall string
@@ -26,7 +26,7 @@ func DXCCGetRecord(callsign string) DXCCData {
 	} else {
 		testcall = call
 	}
-	fmt.Printf("call: %s, wpxprefix: %s, testcall: %s\n", call, wpxprefix, testcall)
+	// fmt.Printf("call: %s, wpxprefix: %s, testcall: %s\n", call, wpxprefix, testcall)
 	for s := range DXCCPrefixes {
 		if s[0:1] == testcall[0:1] {
 			if strings.HasPrefix(testcall, s) {
@@ -96,7 +96,7 @@ func getWpxPrefix(call string) string {
 		parta = tmp
 	}
 
-	fmt.Printf("parta: %s, partb: %s, partc: %s\n", parta, partb, partc)
+	// fmt.Printf("parta: %s, partb: %s, partc: %s\n", parta, partb, partc)
 
 	// Depending on these values we have to determine the prefix.
 	// Following cases are possible:
@@ -106,7 +106,7 @@ func getWpxPrefix(call string) string {
 	// 1.2    B contains no number -> first two letters of B plus 0
 	// 2.    A empty and C is not empty, subcases:
 	// 2.1    C is only a number -> A with changed number
-	// 2.2    C is /P,/M,/MM,/AM -> 1.
+	// 2.2    C is /P, /M, /MM, /AM, /QRP, etc. -> 1.
 	// 2.3    C is something else and will be interpreted as a Prefix
 	// 3.    A is not empty, will be taken as prefix, regardless of C
 	// 4.    A is not empty, will be taken as prefix, regardless of C
@@ -121,29 +121,29 @@ func getWpxPrefix(call string) string {
 			// Prefix is all but the last letters
 			regcall := regexp.MustCompile(`(.+\d)[A-Z]*`)
 			prefixmap := regcall.FindStringSubmatch(partb)
-			fmt.Println("Case 1.1")
+			// fmt.Println("Case 1.1")
 			return prefixmap[1]
 		} else {
 			// Case 1.2
 			// B contains no number
 			// Pick first two letters + 0
-			fmt.Println("Case 1.2")
+			// fmt.Println("Case 1.2")
 			return partb[0:2] + "0"
 		}
 	}
 	// Case 2
 	// A is empty and C is not empty from here
 	if parta == "" && partc != "" {
-		num, err := strconv.Atoi(partc)
+		_, err := strconv.Atoi(partc)
 		if err == nil {
-			fmt.Printf("num: %d\n", num)
+			// fmt.Printf("num: %d\n", num)
 			// Case 2.1
 			// C is only a number
 			// Regular prefix of B is in prefix1
 			regprefix1 := regexp.MustCompile(`(.+\d)[A-Z]*`)
 			prefixmap1 := regprefix1.FindStringSubmatch(partb)
 			prefix1 := prefixmap1[1]
-			fmt.Printf("prefix1: %s\n", prefix1)
+			// fmt.Printf("prefix1: %s\n", prefix1)
 			// Here we need to find out how many digits there are in the
 			// prefix, because for example A45XR/0 is A40. If there are 2
 			// numbers, the first is not deleted. If course in exotic cases
@@ -153,18 +153,18 @@ func getWpxPrefix(call string) string {
 			// attached.   You can still edit it by hand anyway..
 			regprefix2 := regexp.MustCompile(`^([A-Z]\d)\d$`)
 			prefixmap2 := regprefix2.FindStringSubmatch(prefix1)
-			fmt.Printf("prefixmap2: %v\n", prefixmap2)
+			// fmt.Printf("prefixmap2: %v\n", prefixmap2)
 			if len(prefixmap2) == 2 {
 				// For example:
 				// prefix1 = "A45", partc = "0"	-> prefix = "A40"
-				fmt.Println("Case 2.1 a")
+				// fmt.Println("Case 2.1 a")
 				return prefixmap2[1] + partc
 			} else {
 				// Otherwise cut all numbers
 				// Prefix without number in prefix3
 				// and add attached number
 				prefix2 := strings.TrimRight(prefix1, "0123456789")
-				fmt.Println("Case 2.1 b")
+				// fmt.Println("Case 2.1 b")
 				return prefix2 + partc
 			}
 		} else {
@@ -182,7 +182,7 @@ func getWpxPrefix(call string) string {
 				// Same as Case 1.1
 				regprefix4 := regexp.MustCompile(`(.+\d)[A-Z]*`)
 				prefixmap4 := regprefix4.FindStringSubmatch(partb)
-				fmt.Println("Case 2.2 a")
+				// fmt.Println("Case 2.2 a")
 				return prefixmap4[1]
 			} else {
 				// if two or more numbers in partc: ignore
@@ -194,18 +194,18 @@ func getWpxPrefix(call string) string {
 						// See Case 1.1
 						regprefix5 := regexp.MustCompile(`(.*[A-Z])\d+`)
 						prefixmap5 := regprefix5.FindStringSubmatch(partb)
-						fmt.Println("Case 2.2 b")
+						// fmt.Println("Case 2.2 b")
 						return prefixmap5[1]
 					} else {
 						// C must be a prefix!
 						l := len(partc)
 						// if B ends in a digit, it will be a good prefix
 						if strings.ContainsAny(partc[l-1:l], "0123456789") {
-							fmt.Println("Case 2.3 a")
+							// fmt.Println("Case 2.3 a")
 							return partc
 						} else {
 							// Add Zero at the end
-							fmt.Println("Case 2.3 b")
+							// fmt.Println("Case 2.3 b")
 							return partc[:l] + "0"
 						}
 					}
@@ -213,7 +213,7 @@ func getWpxPrefix(call string) string {
 					// Same as Case 1.1
 					regprefix6 := regexp.MustCompile(`(.+\d)[A-Z]*`)
 					prefixmap6 := regprefix6.FindStringSubmatch(partb)
-					fmt.Println("Case 2.3 c")
+					// fmt.Println("Case 2.3 c")
 					return prefixmap6[1]
 
 				}
@@ -228,10 +228,10 @@ func getWpxPrefix(call string) string {
 		i := strings.IndexAny(parta, "0123456789")
 		if i >= 0 {
 			// if ends in number: good prefix
-			fmt.Println("Case 3 a")
+			// fmt.Println("Case 3 a")
 			return parta
 		} else {
-			fmt.Println("Case 3 b")
+			// fmt.Println("Case 3 b")
 			return parta + "0"
 		}
 	}
