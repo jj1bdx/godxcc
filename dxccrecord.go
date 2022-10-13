@@ -18,7 +18,7 @@ func DXCCGetRecord(call string) DXCCData {
 	record := DXCCData{}
 	// if the callsign is matched in the fullcall database,
 	// use it as is
-	dxccdata, matched := DXCCFullcalls[call]
+	dxccdata, matched := tDXCCFullcalls[call]
 	if matched {
 		return dxccdata
 	}
@@ -36,12 +36,12 @@ func DXCCGetRecord(call string) DXCCData {
 	testprefix := prefixmap[1]
 	// Use the longest match result for the prefix
 	matchlen := 0
-	for s := range DXCCPrefixes {
+	for s := range tDXCCPrefixes {
 		if strings.HasPrefix(testprefix, s) {
 			lens := len(s)
 			if matchlen <= lens {
 				matchlen = lens
-				record = DXCCPrefixes[s]
+				record = tDXCCPrefixes[s]
 			}
 		}
 	}
@@ -93,7 +93,7 @@ func getWpxPrefix(call string) string {
 	// If not:
 	// If B is shorter than C,
 	//   then let C be new B and let B be new A
-	_, existsb := DXCCPrefixes[partb]
+	_, existsb := tDXCCPrefixes[partb]
 	if existsb || (len(partb) < len(partc)) {
 		parta = partb
 		partb = partc

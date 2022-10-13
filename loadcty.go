@@ -45,11 +45,11 @@ type DXCCData struct {
 // Tables/maps for DXCC prefixes and full callsigns
 // parsed and loaded from cty.dat
 
-var DXCCPrefixes = map[string]DXCCData{}
-var DXCCFullcalls = map[string]DXCCData{}
+var tDXCCPrefixes = map[string]DXCCData{}
+var tDXCCFullcalls = map[string]DXCCData{}
 
 // Read cty.dat and store parsed data
-// into DXCCPrefixes and DXCCFullcalls
+// into tDXCCPrefixes and tDXCCFullcalls
 
 func LoadCty() {
 
@@ -146,12 +146,12 @@ func LoadCty() {
 				if callstr[0:1] == "=" {
 					// Fullcall
 					fullcall := callstr[1:]
-					DXCCFullcalls[fullcall] = dxccdata
-					// fmt.Printf("DXCCFullcalls[%s] = %v\n", fullcall, dxccdata)
+					tDXCCFullcalls[fullcall] = dxccdata
+					// fmt.Printf("tDXCCFullcalls[%s] = %v\n", fullcall, dxccdata)
 				} else {
 					// Normal prefix
-					DXCCPrefixes[callstr] = dxccdata
-					// fmt.Printf("DXCCPrefixes[%s] = %v\n", callstr, dxccdata)
+					tDXCCPrefixes[callstr] = dxccdata
+					// fmt.Printf("tDXCCPrefixes[%s] = %v\n", callstr, dxccdata)
 				}
 			}
 			// fmt.Printf("\n")
