@@ -83,18 +83,19 @@ func getWpxPrefix(call string) string {
 		parta = callparts[0]
 		partb = callparts[1]
 		partc = callparts[2]
+	}
 
-		// If C is in csaddition, remove it
-		for i := range csadditions {
-			// For known modifiers, see Case 1.1
-			if partc == csadditions[i] {
-				partc = partb
-				partb = parta
-				parta = ""
-				break
-			}
+	// If C is in csaddition, remove it
+	// Example: KL7/JJ1BDX/M -> KL7/JJ1BDX
+	// Example: JJ1BDX/AM -> JJ1BDX
+	for i := range csadditions {
+		// For known modifiers, see Case 1.1
+		if partc == csadditions[i] {
+			partc = partb
+			partb = parta
+			parta = ""
+			break
 		}
-
 	}
 
 	// Then how to distinguish KL7/JJ1BDX correctly?
@@ -114,51 +115,71 @@ func getWpxPrefix(call string) string {
 
 	// fmt.Printf("parta: %s, partb: %s, partc: %s\n", parta, partb, partc)
 
-	// Depending on these values we have to determine the prefix.
-	// Following cases are possible:
-	//
-	// 1.    A and C empty -> only callsign, subcases
-	// 1.1    B contains a number -> everything from start to number in B
-	// 1.2    B contains no number -> first two letters of B plus 0
-	// 2.    A empty and C is not empty, subcases:
-	// 2.1    C is only a number -> A with changed number
-	// 2.2    C is /P, /M, /MM, /AM, /QRP, etc. -> 1.1
-	// 2.3    C is something else and will be interpreted as a Prefix
-	// 3.     A is not empty, will be taken as prefix, regardless of C
+	// Using A/B/C (where B is the main callsign),
+	// we need to process as follows:
+	// 1.    If A is not empty: A is the prefix (C is ignored)
+	// 2.    If A and C are empty:
+	// 2.1    B contains a number -> Get prefix part of B
+	// 2.2    B contains no number -> first two letters of B plus "0"
+	// 3.    If A is empty and C is not empty:
+	// 3.1    C is only one-digit number -> prefix part of B replacing the last digit with C
+	// 3.2    C is two or more digits: ignore C, use 2
+	// 3.3    For other Cs: C is the prefix
 
-	// A and C are empty from here
-	if parta == "" && partc == "" {
-		// Case 1
-		i := strings.IndexAny(partb, "0123456789")
-		if i >= 0 {
-			// Case 1.1
-			// B contains a number
-			// Prefix is all but the last letters
-			regcall := regexp.MustCompile(`(.+\d)[A-Z]*`)
-			prefixmap := regcall.FindStringSubmatch(partb)
-			// fmt.Println("Case 1.1")
-			return prefixmap[1]
+	// 1.    If A exists: A is the prefix (C is ignored)
+	if parta != "" {
+		i := strings.LastIndexAny(parta, "0123456789")
+		if i >= 1 {
+			// if the string length is 2 or more and
+			// the string ends in number: good prefix
+			// No prefix will be shorter than length 2
+			// fmt.Println("Case 1.a")
+			return parta
 		} else {
-			// Case 1.2
-			// B contains no number
-			// Pick first two letters + 0
-			// fmt.Println("Case 1.2")
-			return partb[0:2] + "0"
+			// fmt.Println("Case 1.b")
+			return parta + "0"
 		}
 	}
-	// Case 2
-	// A is empty and C is not empty from here
-	if parta == "" && partc != "" {
-		_, err := strconv.Atoi(partc)
-		if err == nil {
-			// fmt.Printf("num: %d\n", num)
-			// Case 2.1
-			// C is only a number
-			// Regular prefix of B is in prefix1
-			regprefix1 := regexp.MustCompile(`(.+\d)[A-Z]*`)
-			prefixmap1 := regprefix1.FindStringSubmatch(partb)
-			prefix1 := prefixmap1[1]
-			// fmt.Printf("prefix1: %s\n", prefix1)
+
+	// A is empty here
+
+	// obtain prefix part of B (main callsign)
+	var prefixofb string
+	i := strings.IndexAny(partb, "0123456789")
+	if i >= 0 {
+		// Case 2.1
+		// B contains a number
+		// Prefix is all but the last letters
+		regcall := regexp.MustCompile(`(.+\d)[A-Z]*`)
+		prefixmap := regcall.FindStringSubmatch(partb)
+		// fmt.Println("Case 2.1")
+		prefixofb = prefixmap[1]
+	} else {
+		// Case 2.2
+		// B contains no number
+		// Pick first two letters of B + "0"
+		// fmt.Println("Case 2.2")
+		prefixofb = partb[0:2] + "0"
+	}
+
+	// 2.    If A and C are empty:
+	if partc == "" {
+		return prefixofb
+	}
+
+	// A is empty and C is not empty here
+
+	// 3.    If A is empty and C is not empty:
+
+	// 3.1    C is only one-digit number -> prefix part of B replacing the last digit with C
+	num, err := strconv.Atoi(partc)
+	if err == nil {
+		// fmt.Printf("num: %d\n", num)
+		// C contains only number
+		if num < 10 {
+			// fmt.Println("Case 3.1")
+			// C is a one-digit number
+
 			// Here we need to find out how many digits there are in the
 			// prefix, because for example A45XR/0 is A40. If there are 2
 			// numbers, the first is not deleted. If course in exotic cases
@@ -166,90 +187,32 @@ func getWpxPrefix(call string) string {
 			// think that's rather irrelevant cos such calls rarely appear
 			// and if they do, it's very unlikely for them to have a number
 			// attached.   You can still edit it by hand anyway..
-			regprefix2 := regexp.MustCompile(`^([A-Z]\d)\d$`)
-			prefixmap2 := regprefix2.FindStringSubmatch(prefix1)
-			// fmt.Printf("prefixmap2: %v\n", prefixmap2)
-			if len(prefixmap2) == 2 {
-				// For example:
-				// prefix1 = "A45", partc = "0"	-> prefix = "A40"
-				// fmt.Println("Case 2.1 a")
-				return prefixmap2[1] + partc
+
+			lb := len(prefixofb)
+			if lb >= 2 {
+				return prefixofb[:lb-1] + partc
 			} else {
-				// Otherwise cut all numbers
-				// Prefix without number in prefix3
-				// and add attached number
-				prefix2 := strings.TrimRight(prefix1, "0123456789")
-				// fmt.Println("Case 2.1 b")
-				return prefix2 + partc
+				return ""
 			}
+
 		} else {
-			// Case 2.2
-			// If C is in csaddition, See Case 1.1
-			foundincs := false
-			for i := range csadditions {
-				// For known modifiers, see Case 1.1
-				if partc == csadditions[i] {
-					foundincs = true
-					break
-				}
-			}
-			if foundincs {
-				// Same as Case 1.1
-				regprefix4 := regexp.MustCompile(`(.+\d)[A-Z]*`)
-				prefixmap4 := regprefix4.FindStringSubmatch(partb)
-				// fmt.Println("Case 2.2 a")
-				return prefixmap4[1]
-			} else {
-				// if two or more numbers in partc: ignore
-				i1 := strings.IndexAny(partc, "0123456789")
-				if i1 >= 0 {
-					i2 := strings.IndexAny(partc[i1+1:], "0123456789")
-					if i2 >= 0 {
-						// 2 or more digits
-						// See Case 1.1
-						regprefix5 := regexp.MustCompile(`(.*[A-Z])\d+`)
-						prefixmap5 := regprefix5.FindStringSubmatch(partb)
-						// fmt.Println("Case 2.2 b")
-						return prefixmap5[1]
-					} else {
-						// C must be a prefix!
-						l := len(partc)
-						// if B ends in a digit, it will be a good prefix
-						if strings.ContainsAny(partc[l-1:l], "0123456789") {
-							// fmt.Println("Case 2.3 a")
-							return partc
-						} else {
-							// Add Zero at the end
-							// fmt.Println("Case 2.3 b")
-							return partc[:l] + "0"
-						}
-					}
-				} else {
-					// Same as Case 1.1
-					regprefix6 := regexp.MustCompile(`(.+\d)[A-Z]*`)
-					prefixmap6 := regprefix6.FindStringSubmatch(partb)
-					// fmt.Println("Case 2.3 c")
-					return prefixmap6[1]
-
-				}
-			}
-
+			// 3.2    C is two or more digits: ignore C, use 2
+			// fmt.Println("Case 3.2")
+			return prefixofb
 		}
-	}
-
-	// Case 3
-	if parta != "" {
-		// Case 3: A is not empty
-		i := strings.LastIndexAny(parta, "0123456789")
-		if i >= 1 {
-			// if the string length is 2 or more and
-			// the string ends in number: good prefix
-			// No prefix will be shorter than length 2
-			// fmt.Println("Case 3 a")
-			return parta
+	} else {
+		// 3.3    For other Cs: C is the prefix
+		// fmt.Println("Case 3.3")
+		// C must be a prefix!
+		l := len(partc)
+		// if B ends in a digit, it will be a good prefix
+		if strings.ContainsAny(partc[l-1:l], "0123456789") {
+			// fmt.Println("Case 2.3 a")
+			return partc
 		} else {
-			// fmt.Println("Case 3 b")
-			return parta + "0"
+			// Add Zero at the end
+			// fmt.Println("Case 2.3 b")
+			return partc[:l] + "0"
 		}
 	}
 
