@@ -7,8 +7,6 @@ import (
 	// "fmt" // for debug only
 	"io"
 	"log"
-	"os"
-	"path"
 	"regexp"
 	"strconv"
 	"strings"
