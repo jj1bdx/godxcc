@@ -52,9 +52,9 @@ type DXCCRef struct {
 	Ituz      int
 }
 
-var tDXCCBase = make(map[string]DXCCData, 512)
-var tDXCCPrefixes = make(map[string]DXCCRef, 16384)
-var tDXCCFullcalls = make(map[string]DXCCRef, 65536)
+var tDXCCBase = make(map[string]DXCCData, 400)
+var tDXCCPrefixes = make(map[string]DXCCRef, 10000)
+var tDXCCFullcalls = make(map[string]DXCCRef, 20000)
 
 // Get complete DXCCFullcalls for a callsign
 func GetDXCCFullcalls(callsign string) (DXCCData, bool) {
