@@ -28,8 +28,7 @@ import (
 //go:embed cty.dat
 var ctyFile []byte
 
-// DXCC record data for a given callsign
-
+// Full DXCC record data for a given callsign/prefix
 type DXCCData struct {
 	Waecountry string
 	Waz        int
@@ -45,7 +44,8 @@ type DXCCData struct {
 
 // Tables/maps for DXCC prefixes and full callsigns
 // parsed and loaded from cty.dat
-
+// This provides a reference to DXCCData
+// with Waz (CQZ) and Ituz (ITUZ) modification
 type DXCCRef struct {
 	Waeprefix string
 	Waz       int
@@ -85,8 +85,7 @@ func GetDXCCPrefixes(prefix string) (DXCCData, bool) {
 }
 
 // Read cty.dat and store parsed data
-// Read cty.dat and store parsed data
-// into tDXCCPrefixes and tDXCCFullcalls
+// into tDXCCBase, tDXCCPrefixes and tDXCCFullcalls
 func LoadCty() {
 
 	var lastdxccref DXCCRef
@@ -147,6 +146,7 @@ func LoadCty() {
 			linetrimmed := strings.TrimRight(strings.TrimSpace(string(line)), ";,")
 			words := strings.Split(linetrimmed, ",")
 			for i := range words {
+				// Initialize dxccref here
 				dxccref := lastdxccref
 				word := words[i]
 				// CQ Zone in ()
