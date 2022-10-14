@@ -5,9 +5,10 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"github.com/jj1bdx/godxcc"
 	"io"
 	"os"
-	"github.com/jj1bdx/godxcc"
+	// "github.com/pkg/profile" // for profiling only
 	"strings"
 )
 
@@ -16,9 +17,11 @@ func printinfo(call string) {
 }
 
 func main() {
+	// defer profile.Start(profile.ProfilePath("."), profile.MemProfile).Stop()
+
 	godxcc.LoadCty()
 
-	fp, _ := os.Open("callsigns.txt")	
+	fp, _ := os.Open("callsigns.txt")
 	reader := bufio.NewReader(fp)
 
 	end := false
