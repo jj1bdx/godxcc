@@ -112,11 +112,16 @@ func getWpxPrefix(call string) string {
 	}
 
 	// If C is in csaddition, remove it
+	// and let B as new C, A as new B
+	// (reduce this a two-part callsign)
 	// Example: KL7/JJ1BDX/M -> KL7/JJ1BDX
 	// Example: JJ1BDX/AM -> JJ1BDX
 	_, existscs := csadditions[partc]
 	if existscs {
-		partc = ""
+		// DO NOT CHANGE THE SEQUENCE
+		partc = partb
+		partb = parta
+		parta = ""
 	}
 
 	// If the non-empty parts are:
