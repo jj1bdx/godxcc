@@ -7051,7 +7051,7 @@ call: JO6XEX, DXCCData: {Japan 25 45 AS 36.4 -138.38 -9 JA JA 339}
 call: JO6XMM, DXCCData: {Japan 25 45 AS 36.4 -138.38 -9 JA JA 339}
 call: JO7AAB/7, DXCCData: {Japan 25 45 AS 36.4 -138.38 -9 JA JA 339}
 call: JO7AAB/M, DXCCData: {Japan 25 45 AS 36.4 -138.38 -9 JA JA 339}
-call: JO7AAB/M/7, DXCCData: {England 14 27 EU 52.77 1.47 0 G G 223}
+call: JO7AAB/M/7, DXCCData: {Japan 25 45 AS 36.4 -138.38 -9 JA JA 339}
 call: JO7APG, DXCCData: {Japan 25 45 AS 36.4 -138.38 -9 JA JA 339}
 call: JO7BBS, DXCCData: {Japan 25 45 AS 36.4 -138.38 -9 JA JA 339}
 call: JO7CVU, DXCCData: {Japan 25 45 AS 36.4 -138.38 -9 JA JA 339}
@@ -10118,7 +10118,7 @@ call: RA9DZ, DXCCData: {Asiatic Russia 17 30 AS 55.88 -84.08 -7 UA9 UA9 15}
 call: RA9FF/0, DXCCData: {Asiatic Russia 18 32 AS 55.88 -84.08 -7 UA9 UA9 15}
 call: RA9FUE, DXCCData: {European Russia 17 30 EU 53.65 -41.37 -4 UA UA 54}
 call: RA9H, DXCCData: {Asiatic Russia 18 31 AS 55.88 -84.08 -7 UA9 UA9 15}
-call: RA9HTO/0/P, DXCCData: {Asiatic Russia 18 32 AS 55.88 -84.08 -7 UA9 UA9 15}
+call: RA9HTO/0/P, DXCCData: {Asiatic Russia 18 31 AS 55.88 -84.08 -7 UA9 UA9 15}
 call: RA9J, DXCCData: {Asiatic Russia 17 20 AS 55.88 -84.08 -7 UA9 UA9 15}
 call: RA9J/M, DXCCData: {European Russia 16 19 EU 53.65 -41.37 -4 UA UA 54}
 call: RA9JG, DXCCData: {Asiatic Russia 17 20 AS 55.88 -84.08 -7 UA9 UA9 15}

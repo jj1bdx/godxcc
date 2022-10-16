@@ -7,7 +7,7 @@
 package godxcc
 
 import (
-	// "/fmt" // for debug only
+	// "fmt" // for debug only
 	"regexp"
 	"strconv"
 	"strings"
@@ -116,25 +116,33 @@ func getWpxPrefix(call string) string {
 	// Example: JJ1BDX/AM -> JJ1BDX
 	_, existscs := csadditions[partc]
 	if existscs {
-		// DO NOT CHANGE THE SEQUENCE
-		partc = partb
-		partb = parta
-		parta = ""
+		partc = ""
 	}
 
-	// Then how to distinguish KL7/JJ1BDX correctly?
-	// Heuristics:
-	// If the first part B is a known prefix
-	//   then let the main callsign in C be new B
-	//     and let prefix B be new A
-	// If not:
-	//   if B is shorter than C,
-	//     then let C be new B and let B be new A
-	_, existsb := tDXCCPrefixes[partb]
-	if existsb || (len(partb) < len(partc)) {
-		parta = partb
-		partb = partc
-		partc = ""
+	// If the non-empty parts are:
+	//  A/B -> then A is the prefix, leave them as they are
+	//  A/B/C -> then A is the prefix, leave them as they are
+	//  B -> then B is the callsign, leave them as they are
+
+	// So if A is empty and C is NOT empty:
+	if parta == "" && partc != "" {
+		//  B/C -> use the following heuristics
+		// How to distinguish KL7/JJ1BDX correctly
+		//  when KL7 is B and JJ1BDX is C?
+		// Heuristics:
+		// If the first part B is a known prefix
+		// (withOUT the longest prefix match)
+		//   then let the main callsign in C be new B
+		//     and let prefix B be new A
+		// If not:
+		//   if B is shorter than C,
+		//     then let C be new B and let B be new A
+		_, existsb := tDXCCPrefixes[partb]
+		if existsb || (len(partb) < len(partc)) {
+			parta = partb
+			partb = partc
+			partc = ""
+		}
 	}
 
 	// fmt.Printf("parta: %s, partb: %s, partc: %s\n", parta, partb, partc)
