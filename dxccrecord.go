@@ -78,6 +78,7 @@ func getWpxPrefix(call string) string {
 		"IEJ50": true, // JAs, please don't add this
 		"OKA50": true, // JAs, please don't add this
 		"OKA60": true, // JAs, please don't add this
+		"J":     true, // ?
 	}
 
 	// First check if the call is in the proper format, A/B/C where A and C
@@ -237,5 +238,6 @@ func getWpxPrefix(call string) string {
 	}
 
 	// Return empty string for unparsable prefix
+	// This code is supposed to be unreachable
 	return ""
 }
