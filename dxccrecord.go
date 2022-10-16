@@ -51,35 +51,37 @@ func DXCCGetRecord(call string) DXCCData {
 	return record
 }
 
+// Callsign additions which should not be recognized as prefixes
+var csadditions = map[string]bool{
+
+	"90KK":  true, // ?
+	"A":     true, // ?
+	"AE":    true, // FCC Rules Part 97.119(f)(3)
+	"AG":    true, // FCC Rules Part 97.119(f)(2)
+	"AM":    true, // aeronautical mobile
+	"B":     true, // ?
+	"IEJ50": true, // JAs, please don't add this
+	"J":     true, // ?
+	"KT":    true, // FCC Rules Part 97.119(f)(1)
+	"L":     true, // ?
+	"LGT":   true, // Lighthouse? Don't add this
+	"M":     true, // mobile
+	"MM":    true, // marine mobile
+	"OKA50": true, // JAs, please don't add this
+	"OKA60": true, // JAs, please don't add this
+	"P":     true, // portable
+	"QRP":   true, // Don't add this, please
+	"QRPP":  true, // Don't add this, please
+	"REN":   true, // Regional identifier?
+	"SO200": true, // JAs, please don't add this
+}
+
 // Obtain WPX prefix for a callsign
 func getWpxPrefix(call string) string {
 
 	var parta string
 	var partb string
 	var partc string
-
-	csadditions := map[string]bool{
-		"P":     true, // portable
-		"M":     true, // mobile
-		"MM":    true, // marine mobile
-		"AM":    true, // aeronautical mobile
-		"A":     true, // ?
-		"KT":    true, // FCC Rules Part 97.119(f)(1)
-		"AG":    true, // FCC Rules Part 97.119(f)(2)
-		"AE":    true, // FCC Rules Part 97.119(f)(3)
-		"QRP":   true, // Don't add this, please
-		"QRPP":  true, // Don't add this, please
-		"LGT":   true, // Lighthouse? Don't add this
-		"L":     true, // ?
-		"90KK":  true, // ?
-		"SO200": true, // JAs, please don't add this
-		"REN":   true, // Regional identifier?
-		"B":     true, // ?
-		"IEJ50": true, // JAs, please don't add this
-		"OKA50": true, // JAs, please don't add this
-		"OKA60": true, // JAs, please don't add this
-		"J":     true, // ?
-	}
 
 	// First check if the call is in the proper format, A/B/C where A and C
 	// are optional (prefix of guest country and P, MM, AM etc) and B is the
@@ -114,6 +116,7 @@ func getWpxPrefix(call string) string {
 	// Example: JJ1BDX/AM -> JJ1BDX
 	_, existscs := csadditions[partc]
 	if existscs {
+		// DO NOT CHANGE THE SEQUENCE
 		partc = partb
 		partb = parta
 		parta = ""
@@ -125,8 +128,8 @@ func getWpxPrefix(call string) string {
 	//   then let the main callsign in C be new B
 	//     and let prefix B be new A
 	// If not:
-	// If B is shorter than C,
-	//   then let C be new B and let B be new A
+	//   if B is shorter than C,
+	//     then let C be new B and let B be new A
 	_, existsb := tDXCCPrefixes[partb]
 	if existsb || (len(partb) < len(partc)) {
 		parta = partb
@@ -140,10 +143,13 @@ func getWpxPrefix(call string) string {
 	// we need to process as follows:
 	// 1.    If A is not empty: A is the prefix (C is ignored)
 	// 2.    If A and C are empty:
-	// 2.1    B contains a number -> Get prefix part of B
-	// 2.2    B contains no number -> first two letters of B plus "0"
+	// 2.1    B contains a number ->
+	//          Get prefix part of B
+	// 2.2    B contains no number ->
+	//          first two letters of B plus "0"
 	// 3.    If A is empty and C is not empty:
-	// 3.1    C is only one-digit number -> prefix part of B replacing the last digit with C
+	// 3.1    C is only one-digit number ->
+	//          prefix part of B replacing the last digit with C
 	// 3.2    C is two or more digits: ignore C, use 2
 	// 3.3    For other Cs: C is the prefix
 
@@ -192,7 +198,8 @@ func getWpxPrefix(call string) string {
 
 	// 3.    If A is empty and C is not empty:
 
-	// 3.1    C is only one-digit number -> prefix part of B replacing the last digit with C
+	// 3.1    C is only one-digit number ->
+	//        prefix part of B replacing the last digit with C
 	num, err := strconv.Atoi(partc)
 	if err == nil {
 		// fmt.Printf("num: %d\n", num)
@@ -200,19 +207,14 @@ func getWpxPrefix(call string) string {
 		if num < 10 {
 			// fmt.Println("Case 3.1")
 			// C is a one-digit number
-
-			// Here we need to find out how many digits there are in the
-			// prefix, because for example A45XR/0 is A40. If there are 2
-			// numbers, the first is not deleted. If course in exotic cases
-			// like N66A/7 -> N7 this brings the wrong result of N67, but I
-			// think that's rather irrelevant cos such calls rarely appear
-			// and if they do, it's very unlikely for them to have a number
-			// attached.   You can still edit it by hand anyway..
-
+			// Example:
+			//  A35ABC/0: A35 -> A30
 			lb := len(prefixofb)
 			if lb >= 2 {
 				return prefixofb[:lb-1] + partc
 			} else {
+				// 1-letter prefix:
+				// illegal prefix anyway
 				return ""
 			}
 
