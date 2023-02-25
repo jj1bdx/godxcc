@@ -1,31 +1,22 @@
 // Loader of BIG CTY file cty.dat for godxcc.
 // See <https://www.country-files.com/big-cty/>
 // for the details of cty.dat format and updates.
-// NOTE WELL: godxcc uses EMBEDDED cty.dat
-// in the source file at the time of the package building.
+// NOTE: godxcc uses an external file of cty.dat
 
 package godxcc
 
 import (
 	"bufio"
-	"bytes"
-	_ "embed"
-
 	// "fmt" // for debug only
 	"io"
 	"log"
+	"os"
+	"path"
 	"regexp"
 	"strconv"
 	"strings"
 )
 
-// Load ctyFile from the local file cty.dat
-// at the compile time using go:embed
-
-// Do not remove the "//go:embed" line
-// just before ctyFile var statement!
-
-//go:embed cty.dat
 var ctyFile []byte
 
 // Full DXCC record data for a given callsign/prefix
@@ -84,12 +75,53 @@ func GetDXCCPrefixes(prefix string) (DXCCData, bool) {
 	return DXCCData{}, false
 }
 
+// Locate cty.dat and open the file.
+// Returns the *bufio.Reader for the file.
+//
+// Search path:
+//
+//	/usr/share/dxcc, /usr/local/share/dxcc,
+//	and the path where the program resides.
+func locateCty() *bufio.Reader {
+	basename, err := os.Executable()
+	if err != nil {
+		log.Fatalf("locateCty() basename: %v", err)
+	}
+	basedir := path.Dir(basename)
+
+	var filename string
+	filename = "/usr/share/dxcc/cty.dat"
+	_, err = os.Stat(filename)
+	if !os.IsNotExist(err) {
+	} else {
+		// fmt.Printf("locateCty(): %s does not exist\n", filename)
+		filename = "/usr/local/share/dxcc/cty.dat"
+		_, err = os.Stat(filename)
+		if !os.IsNotExist(err) {
+		} else {
+			// fmt.Printf("locateCty(): %s does not exist\n", filename)
+			filename = basedir + "/cty.dat"
+			_, err = os.Stat(filename)
+			if !os.IsNotExist(err) {
+			} else {
+				log.Fatalf("locateCty() unable to find cty.dat: %v", err)
+			}
+		}
+	}
+
+	fp, err := os.Open(filename)
+	if err != nil {
+		log.Fatalf("locateCty() unable to open %s: %v", filename, err)
+	}
+	return bufio.NewReader(fp)
+}
+
 // Read cty.dat and store parsed data
 // into tDXCCBase, tDXCCPrefixes and tDXCCFullcalls
 func LoadCty() {
 
 	var lastdxccref DXCCRef
-	reader := bufio.NewReader(bytes.NewReader(ctyFile))
+	reader := locateCty()
 
 	for line, err := reader.ReadBytes('\n'); line != nil || err != nil; line, err = reader.ReadBytes('\n') {
 		if err != nil {
