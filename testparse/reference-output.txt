@@ -4857,7 +4857,7 @@ call: JE7CWH/8, DXCCData: {Japan 25 45 AS 36.4 -138.38 -9 JA JA 339}
 call: JE7DMH, DXCCData: {Japan 25 45 AS 36.4 -138.38 -9 JA JA 339}
 call: JE7GDX, DXCCData: {Japan 25 45 AS 36.4 -138.38 -9 JA JA 339}
 call: JE7GIW, DXCCData: {Japan 25 45 AS 36.4 -138.38 -9 JA JA 339}
-call: JE7IZM/JD1, DXCCData: {Ogasawara 27 45 AS 27.05 -142.2 -9 JD/o JD/o 192}
+call: JE7IZM/JD1, DXCCData: {Minami Torishima 27 90 OC 24.28 -153.97 -10 JD/m JD/m 177}
 call: JE7MFI/7, DXCCData: {Japan 25 45 AS 36.4 -138.38 -9 JA JA 339}
 call: JE7MGC, DXCCData: {Japan 25 45 AS 36.4 -138.38 -9 JA JA 339}
 call: JE7MHM, DXCCData: {Japan 25 45 AS 36.4 -138.38 -9 JA JA 339}
@@ -8050,7 +8050,7 @@ call: K7M, DXCCData: {United States 3 6 NA 37.6 91.87 5 K K 291}
 call: K7MH, DXCCData: {United States 3 6 NA 37.6 91.87 5 K K 291}
 call: K7MI, DXCCData: {United States 3 6 NA 37.6 91.87 5 K K 291}
 call: K7MM, DXCCData: {United States 3 6 NA 37.6 91.87 5 K K 291}
-call: K7MOA, DXCCData: {United States 4 7 NA 37.6 91.87 5 K K 291}
+call: K7MOA, DXCCData: {United States 3 6 NA 37.6 91.87 5 K K 291}
 call: K7MTR, DXCCData: {United States 3 6 NA 37.6 91.87 5 K K 291}
 call: K7NA, DXCCData: {United States 3 6 NA 37.6 91.87 5 K K 291}
 call: K7NB/KH2, DXCCData: {Guam 27 64 OC 13.37 -144.7 -10 KH2 KH2 103}
@@ -8202,7 +8202,7 @@ call: KB8U, DXCCData: {United States 4 8 NA 37.6 91.87 5 K K 291}
 call: KB9ELS, DXCCData: {United States 4 8 NA 37.6 91.87 5 K K 291}
 call: KB9MYP, DXCCData: {United States 4 8 NA 37.6 91.87 5 K K 291}
 call: KC0CF, DXCCData: {United States 4 7 NA 37.6 91.87 5 K K 291}
-call: KC1BB, DXCCData: {United States 5 8 NA 37.6 91.87 5 K K 291}
+call: KC1BB, DXCCData: {United States 3 6 NA 37.6 91.87 5 K K 291}
 call: KC1F, DXCCData: {United States 5 8 NA 37.6 91.87 5 K K 291}
 call: KC1NDQ, DXCCData: {United States 5 8 NA 37.6 91.87 5 K K 291}
 call: KC1XX, DXCCData: {United States 5 8 NA 37.6 91.87 5 K K 291}
@@ -8544,7 +8544,7 @@ call: KL1IN, DXCCData: {Alaska 1 1 NA 61.4 148.87 8 KL KL 6}
 call: KL1JP, DXCCData: {Alaska 1 1 NA 61.4 148.87 8 KL KL 6}
 call: KL2R, DXCCData: {Alaska 1 1 NA 61.4 148.87 8 KL KL 6}
 call: KL4CF, DXCCData: {Alaska 1 1 NA 61.4 148.87 8 KL KL 6}
-call: KL5AY, DXCCData: {Alaska 1 1 NA 61.4 148.87 8 KL KL 6}
+call: KL5AY, DXCCData: {United States 4 8 NA 37.6 91.87 5 K K 291}
 call: KL5DX, DXCCData: {Alaska 1 1 NA 61.4 148.87 8 KL KL 6}
 call: KL5O, DXCCData: {Alaska 1 1 NA 61.4 148.87 8 KL KL 6}
 call: KL7/HA1AG, DXCCData: {Alaska 1 1 NA 61.4 148.87 8 KL KL 6}
@@ -8634,7 +8634,7 @@ call: KR5V, DXCCData: {United States 4 7 NA 37.6 91.87 5 K K 291}
 call: KR6MD, DXCCData: {United States 3 6 NA 37.6 91.87 5 K K 291}
 call: KR7LD, DXCCData: {United States 3 6 NA 37.6 91.87 5 K K 291}
 call: KR7O, DXCCData: {United States 3 6 NA 37.6 91.87 5 K K 291}
-call: KR7Q, DXCCData: {United States 3 6 NA 37.6 91.87 5 K K 291}
+call: KR7Q, DXCCData: {United States 4 6 NA 37.6 91.87 5 K K 291}
 call: KR7X, DXCCData: {United States 3 6 NA 37.6 91.87 5 K K 291}
 call: KS4OT, DXCCData: {United States 5 8 NA 37.6 91.87 5 K K 291}
 call: KS4R, DXCCData: {United States 5 8 NA 37.6 91.87 5 K K 291}
@@ -9048,7 +9048,7 @@ call: N4QS, DXCCData: {United States 4 8 NA 37.6 91.87 5 K K 291}
 call: N4RK/AM, DXCCData: {United States 5 8 NA 37.6 91.87 5 K K 291}
 call: N4RV, DXCCData: {United States 5 8 NA 37.6 91.87 5 K K 291}
 call: N4RWG, DXCCData: {United States 5 8 NA 37.6 91.87 5 K K 291}
-call: N4RZ, DXCCData: {United States 5 8 NA 37.6 91.87 5 K K 291}
+call: N4RZ, DXCCData: {United States 4 8 NA 37.6 91.87 5 K K 291}
 call: N4SL, DXCCData: {United States 5 8 NA 37.6 91.87 5 K K 291}
 call: N4SVC, DXCCData: {United States 5 8 NA 37.6 91.87 5 K K 291}
 call: N4UN, DXCCData: {United States 5 8 NA 37.6 91.87 5 K K 291}
@@ -9143,7 +9143,7 @@ call: N6PM, DXCCData: {United States 3 6 NA 37.6 91.87 5 K K 291}
 call: N6QEK/KL7, DXCCData: {Alaska 1 1 NA 61.4 148.87 8 KL KL 6}
 call: N6QQ, DXCCData: {United States 3 6 NA 37.6 91.87 5 K K 291}
 call: N6RC, DXCCData: {United States 3 6 NA 37.6 91.87 5 K K 291}
-call: N6RH, DXCCData: {United States 3 6 NA 37.6 91.87 5 K K 291}
+call: N6RH, DXCCData: {United States 4 7 NA 37.6 91.87 5 K K 291}
 call: N6RO, DXCCData: {United States 3 6 NA 37.6 91.87 5 K K 291}
 call: N6RV, DXCCData: {United States 3 6 NA 37.6 91.87 5 K K 291}
 call: N6RVI, DXCCData: {United States 3 6 NA 37.6 91.87 5 K K 291}
@@ -12427,9 +12427,9 @@ call: W0KZD, DXCCData: {United States 4 7 NA 37.6 91.87 5 K K 291}
 call: W0LSD, DXCCData: {United States 4 7 NA 37.6 91.87 5 K K 291}
 call: W0OVX, DXCCData: {United States 4 7 NA 37.6 91.87 5 K K 291}
 call: W0PD, DXCCData: {United States 4 7 NA 37.6 91.87 5 K K 291}
-call: W0PE, DXCCData: {United States 4 7 NA 37.6 91.87 5 K K 291}
+call: W0PE, DXCCData: {United States 3 6 NA 37.6 91.87 5 K K 291}
 call: W0PR, DXCCData: {United States 4 7 NA 37.6 91.87 5 K K 291}
-call: W0RIC, DXCCData: {United States 3 6 NA 37.6 91.87 5 K K 291}
+call: W0RIC, DXCCData: {United States 4 7 NA 37.6 91.87 5 K K 291}
 call: W0RX, DXCCData: {United States 4 7 NA 37.6 91.87 5 K K 291}
 call: W0SD, DXCCData: {United States 4 7 NA 37.6 91.87 5 K K 291}
 call: W0TM, DXCCData: {United States 4 7 NA 37.6 91.87 5 K K 291}
@@ -12463,7 +12463,7 @@ call: W1DEO, DXCCData: {United States 5 8 NA 37.6 91.87 5 K K 291}
 call: W1E, DXCCData: {United States 5 8 NA 37.6 91.87 5 K K 291}
 call: W1ECT, DXCCData: {United States 5 8 NA 37.6 91.87 5 K K 291}
 call: W1EL, DXCCData: {United States 5 8 NA 37.6 91.87 5 K K 291}
-call: W1ESE, DXCCData: {United States 5 8 NA 37.6 91.87 5 K K 291}
+call: W1ESE, DXCCData: {United States 3 6 NA 37.6 91.87 5 K K 291}
 call: W1EVT, DXCCData: {United States 5 8 NA 37.6 91.87 5 K K 291}
 call: W1FJ, DXCCData: {United States 5 8 NA 37.6 91.87 5 K K 291}
 call: W1IA, DXCCData: {United States 5 8 NA 37.6 91.87 5 K K 291}
@@ -12525,7 +12525,7 @@ call: W3JH/KH2, DXCCData: {Guam 27 64 OC 13.37 -144.7 -10 KH2 KH2 103}
 call: W3KB, DXCCData: {United States 5 8 NA 37.6 91.87 5 K K 291}
 call: W3KL, DXCCData: {United States 5 8 NA 37.6 91.87 5 K K 291}
 call: W3LPL, DXCCData: {United States 5 8 NA 37.6 91.87 5 K K 291}
-call: W3NX, DXCCData: {United States 5 8 NA 37.6 91.87 5 K K 291}
+call: W3NX, DXCCData: {United States 3 6 NA 37.6 91.87 5 K K 291}
 call: W3PP, DXCCData: {United States 5 8 NA 37.6 91.87 5 K K 291}
 call: W3RCQ, DXCCData: {United States 5 8 NA 37.6 91.87 5 K K 291}
 call: W3RJ, DXCCData: {United States 5 8 NA 37.6 91.87 5 K K 291}
@@ -12632,7 +12632,7 @@ call: W6KH, DXCCData: {United States 3 6 NA 37.6 91.87 5 K K 291}
 call: W6KK, DXCCData: {United States 3 6 NA 37.6 91.87 5 K K 291}
 call: W6KNH/KH0, DXCCData: {Mariana Islands 27 64 OC 15.18 -145.72 -10 KH0 KH0 166}
 call: W6KP, DXCCData: {United States 3 6 NA 37.6 91.87 5 K K 291}
-call: W6LAX, DXCCData: {United States 4 7 NA 37.6 91.87 5 K K 291}
+call: W6LAX, DXCCData: {United States 3 6 NA 37.6 91.87 5 K K 291}
 call: W6LD, DXCCData: {United States 3 6 NA 37.6 91.87 5 K K 291}
 call: W6LG, DXCCData: {United States 3 6 NA 37.6 91.87 5 K K 291}
 call: W6LY, DXCCData: {United States 3 6 NA 37.6 91.87 5 K K 291}
