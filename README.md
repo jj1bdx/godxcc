@@ -4,7 +4,20 @@
 
 * Run `godxcc.LoadCty()` for initialization
 * `godxcc.DXCCGetRecord()` argument callsign must be fully capitalized and verified
-* `CTY.DAT` file is *embedded* by go:embed aka embed package. Update and rebuild the package for updating the database.
+
+### cty.dat file
+
+cty.dat file is no longer embedded in the Go code and must be externally provided.
+The filename must be all *lowercased*.
+
+The file search path is as follows, respectively:
+
+* /usr/share/dxcc/cty.dat
+* /usr/local/share/dxcc/cty.dat
+* (directory where the executable file resides)/cty.dat
+
+See [the Big CTY page by Jim Reisert, AD1C](https://www.country-files.com/big-cty/)
+for the cty.dat file.
 
 ## usage
 
@@ -27,7 +40,4 @@
 ## LICENSE
 
 MIT
-
-* CTY.DAT license is under cty.dat.copyright.txt
-* cty.dat reference: Big CTY by Jim Reisert, AD1C <https://www.country-files.com/big-cty/>
 
